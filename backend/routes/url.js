@@ -29,9 +29,12 @@ router.post('/shorten', async (req, res) => {
 
         const url = await Url.create({ shortId, originalUrl });
 
+        const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+        const baseUrl = process.env.BASE_URL || `${protocol}://${req.get('host')}`;
+
         res.json({
             shortId: url.shortId,
-            shortUrl: `${process.env.BASE_URL}/${url.shortId}`,
+            shortUrl: `${baseUrl}/${url.shortId}`,
         })
     }
     catch (err) {
